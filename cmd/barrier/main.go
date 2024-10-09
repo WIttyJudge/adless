@@ -44,6 +44,7 @@ func setupApp() *cli.App {
 		cli.ShowAppHelpAndExit(ctx, 1)
 	}
 
+	app.Before = action.BeforeAction
 	app.Commands = action.GetCommands()
 	app.Flags = action.GetFlags()
 

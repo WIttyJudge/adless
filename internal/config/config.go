@@ -1,0 +1,76 @@
+package config
+
+import (
+	"errors"
+	"os"
+	"path/filepath"
+
+	"gopkg.in/yaml.v3"
+)
+
+// Config represents the entire configuration structure
+type Config struct {
+	Blocklists []Blocklist `yaml:"blocklists"`
+}
+
+type Blocklist struct {
+	Target string `yaml:"target"`
+}
+
+func Load() (*Config, error) {
+	location := configLocation()
+
+	config, err := readConfig(location)
+	if errors.Is(err, os.ErrNotExist) {
+		return defaultConfig(), nil
+	}
+	if err != nil {
+		return nil, err
+	}
+
+	return config, nil
+}
+
+func LoadByUser(location string) (*Config, error) {
+	config, err := readConfig(location)
+	if err != nil {
+		return nil, err
+	}
+
+	return config, nil
+}
+
+// configLocation returns the location of the config file
+func configLocation() string {
+	if bch := os.Getenv("BARRIER_CONFIG_HOME"); bch != "" {
+		return filepath.Join(bch, "config.yml")
+	}
+
+	if xdgConfig := os.Getenv("XDG_CONFIG_HOME"); xdgConfig != "" {
+		return filepath.Join(xdgConfig, "barrier", "config.yml")
+	}
+
+	return filepath.Join(os.Getenv("HOME"), "config", "barrier", "config.yml")
+}
+
+func readConfig(location string) (*Config, error) {
+	data, err := os.ReadFile(location)
+	if err != nil {
+		return nil, err
+	}
+
+	config := defaultConfig()
+	if err := yaml.Unmarshal(data, config); err != nil {
+		return nil, err
+	}
+
+	return config, nil
+}
+
+func defaultConfig() *Config {
+	return &Config{
+		Blocklists: []Blocklist{
+			{Target: "https://raw.githubusercontent.com/StevenBlack/hosts/master/data/StevenBlack/hosts"},
+		},
+	}
+}
