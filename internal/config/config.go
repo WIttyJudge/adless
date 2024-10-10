@@ -5,6 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/rs/zerolog/log"
+
 	"gopkg.in/yaml.v3"
 )
 
@@ -22,11 +24,18 @@ func Load() (*Config, error) {
 
 	config, err := readConfig(location)
 	if errors.Is(err, os.ErrNotExist) {
+		log.Debug().Msg("local config file doesn't exist. Default configuration loaded")
 		return defaultConfig(), nil
 	}
 	if err != nil {
 		return nil, err
 	}
+
+	if err := Validate(config); err != nil {
+		return nil, err
+	}
+
+	log.Debug().Str("config", location).Msg("config file loaded")
 
 	return config, nil
 }
@@ -36,6 +45,12 @@ func LoadByUser(location string) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	if err := Validate(config); err != nil {
+		return nil, err
+	}
+
+	log.Debug().Str("config", location).Msg("config file loaded")
 
 	return config, nil
 }

@@ -1,9 +1,10 @@
 package action
 
 import (
+	"barrier/internal/action/exit"
 	"barrier/internal/config"
-	"log"
 
+	"github.com/rs/zerolog"
 	"github.com/urfave/cli/v2"
 )
 
@@ -20,8 +21,12 @@ func (a *Action) BeforeAction(ctx *cli.Context) error {
 		return nil
 	}
 
+	if ctx.Bool("verbose") {
+		zerolog.SetGlobalLevel(zerolog.DebugLevel)
+	}
+
 	if err := a.loadConfig(ctx); err != nil {
-		log.Fatal(err)
+		return exit.Error(exit.Config, err, "failed to load config file")
 	}
 
 	return nil
@@ -31,19 +36,19 @@ func (a *Action) GetCommands() []*cli.Command {
 	return []*cli.Command{
 		{
 			Name:        "start",
-			Usage:       "start blocking",
+			Usage:       "Start blocking",
 			Description: "",
 			Action:      a.Start,
 		},
 		{
 			Name:        "stop",
-			Usage:       "stop blocking",
+			Usage:       "Stop blocking",
 			Description: "",
 			Action:      a.Stop,
 		},
 		{
 			Name:        "update",
-			Usage:       "update resources",
+			Usage:       "Update resources",
 			Description: "",
 			Action:      a.Update,
 		},
@@ -55,6 +60,12 @@ func (a *Action) GetFlags() []cli.Flag {
 		&cli.StringFlag{
 			Name:  "config-file",
 			Usage: "Path to config file",
+		},
+		&cli.BoolFlag{
+			Name:               "verbose",
+			Aliases:            []string{"v"},
+			Usage:              "Enable debug mode",
+			DisableDefaultText: true,
 		},
 	}
 }

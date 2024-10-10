@@ -3,10 +3,12 @@ package main
 import (
 	"barrier/internal/action"
 	"fmt"
-	"log"
 	"os"
 	"sort"
+	"time"
 
+	"github.com/rs/zerolog"
+	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 )
 
@@ -17,11 +19,17 @@ var (
 )
 
 func main() {
+	setupLogger()
 	app := setupApp()
 
 	if err := app.Run(os.Args); err != nil {
-		log.Fatal(err)
+		log.Fatal().Err(err)
 	}
+}
+
+func setupLogger() {
+	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: time.TimeOnly})
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
 }
 
 func setupApp() *cli.App {
@@ -33,6 +41,13 @@ func setupApp() *cli.App {
 	app.UseShortOptionHandling = true
 	app.Version = version
 
+	cli.VersionFlag = &cli.BoolFlag{
+		Name:               "version",
+		Aliases:            []string{"V"},
+		Usage:              "Print the version",
+		DisableDefaultText: true,
+	}
+
 	cli.VersionPrinter = func(ctx *cli.Context) {
 		fmt.Println("Version:\t", ctx.App.Version)
 		fmt.Println("Git Commit:\t", gitCommit)
@@ -40,8 +55,15 @@ func setupApp() *cli.App {
 	}
 
 	app.CommandNotFound = func(ctx *cli.Context, command string) {
-		fmt.Printf("Error. Unknown command: '%s'\n\n", command)
-		cli.ShowAppHelpAndExit(ctx, 1)
+		fmt.Printf("error: unrecognized subcommand: '%s'\n\n", command)
+		fmt.Println("for more information, try '--help'.")
+	}
+
+	cli.HelpFlag = &cli.BoolFlag{
+		Name:               "help",
+		Aliases:            []string{"h"},
+		Usage:              "Show help",
+		DisableDefaultText: true,
 	}
 
 	app.Before = action.BeforeAction
