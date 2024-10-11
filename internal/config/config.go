@@ -4,6 +4,7 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/rs/zerolog/log"
 
@@ -13,10 +14,15 @@ import (
 // Config represents the entire configuration structure
 type Config struct {
 	Blocklists []Blocklist `yaml:"blocklists"`
+	HTTP       HTTP        `yaml:"http"`
 }
 
 type Blocklist struct {
 	Target string `yaml:"target"`
+}
+
+type HTTP struct {
+	Timeout time.Duration `yaml:"timeout"`
 }
 
 func Load() (*Config, error) {
@@ -83,9 +89,14 @@ func readConfig(location string) (*Config, error) {
 }
 
 func defaultConfig() *Config {
+	httpTimeout, _ := time.ParseDuration("10s")
+
 	return &Config{
 		Blocklists: []Blocklist{
 			{Target: "https://raw.githubusercontent.com/StevenBlack/hosts/master/data/StevenBlack/hosts"},
+		},
+		HTTP: HTTP{
+			Timeout: httpTimeout,
 		},
 	}
 }
