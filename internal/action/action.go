@@ -52,6 +52,17 @@ func (a *Action) GetCommands() []*cli.Command {
 			Description: "",
 			Action:      a.Update,
 		},
+		{
+			Name:  "restore",
+			Usage: "Restore the original hosts file from its backup",
+			Description: "" +
+				"When a `start` command is invoked, it creates a backup of the " +
+				"original hosts file by copying it a backup file (hosts.backup).\n" +
+				"The `restore` command copies the backup file (hosts.backup) back to its " +
+				"original location (hosts).\n" +
+				"Backup file must already exist to perform a command successfully.",
+			Action: a.Restore,
+		},
 	}
 }
 

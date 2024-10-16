@@ -11,15 +11,19 @@ import (
 
 const localhost = "127.0.0.1"
 
+// Processor is a structure that is responsible for processing blocklists.
 type Processor struct {
 	config     *config.Config
 	httpClient *http.HTTP
 }
 
+// Result contains multiple parsed blocklists.
 type Result struct {
 	ParsedBlocklists []ParsedBlocklist
 }
 
+// ParsedBlocklist represents a completed result of blocklist
+// that is ready to be appended into hosts file.
 type ParsedBlocklist struct {
 	LinesContent []LineContent
 }
@@ -29,6 +33,7 @@ type LineContent struct {
 	domainName string
 }
 
+// NewProcessor initializes Processor structure.
 func NewProcessor(config *config.Config) *Processor {
 	httpClient := http.New(&config.HTTP)
 
@@ -38,6 +43,8 @@ func NewProcessor(config *config.Config) *Processor {
 	}
 }
 
+// Process processes blocklists and returns a finished result
+// that is ready to save to hosts file.
 func (p *Processor) Process() (Result, error) {
 	parsedBlocklists := make([]ParsedBlocklist, 0, len(p.config.Blocklists))
 
@@ -109,6 +116,8 @@ func (p *Processor) removeInLineComment(line string) string {
 
 func (r Result) FormatToHostsfile() string {
 	var builder strings.Builder
+
+	builder.WriteString("\n")
 
 	for _, parsedBlocklist := range r.ParsedBlocklists {
 		for _, lineContent := range parsedBlocklist.LinesContent {

@@ -3,7 +3,6 @@ package action
 import (
 	"barrier/internal/action/exit"
 	"barrier/internal/hostsfile"
-	"fmt"
 
 	"github.com/urfave/cli/v2"
 )
@@ -25,7 +24,9 @@ func (a *Action) Start(ctx *cli.Context) error {
 		return err
 	}
 
-	fmt.Println(result.FormatToHostsfile())
+	if err := hosts.Write(result.FormatToHostsfile()); err != nil {
+		return exit.Error(exit.Hostsfile, err, "failed to write to hosts file")
+	}
 
 	return nil
 }

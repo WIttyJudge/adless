@@ -20,7 +20,7 @@ func New() (*File, error) {
 	location := location()
 	backupLocation := location + ".backup"
 
-	osFile, err := os.OpenFile(location, os.O_WRONLY, 0665)
+	osFile, err := os.OpenFile(location, os.O_WRONLY|os.O_APPEND, 0665)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open file: %w", err)
 	}
@@ -35,13 +35,22 @@ func New() (*File, error) {
 }
 
 // Backup creates a copy of hosts file with .backup suffix
-func (h *File) Backup() error {
-	return fsutil.CopyFile(h.fileLocation, h.backupLocation)
+func (f *File) Backup() error {
+	return fsutil.CopyFile(f.fileLocation, f.backupLocation)
+}
+
+// Restore restores the original hosts file from its backup.
+func (f *File) Restore() error {
+	return fsutil.CopyFileIfExist(f.backupLocation, f.fileLocation)
 }
 
 // Write writes data to file
-func (h *File) Write() {
-	// h.file.Name
+func (f *File) Write(content string) error {
+	if _, err := f.file.WriteString(content); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func location() string {

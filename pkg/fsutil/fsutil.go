@@ -1,6 +1,8 @@
 package fsutil
 
 import (
+	"errors"
+	"fmt"
 	"io"
 	"os"
 )
@@ -25,4 +27,14 @@ func CopyFile(src, dst string) error {
 	}
 
 	return nil
+}
+
+// CopyFileIsExist copies a file from source to destination only in case if
+// destination file exists.
+func CopyFileIfExist(src, dst string) error {
+	if _, err := os.Stat(src); errors.Is(err, os.ErrNotExist) {
+		return fmt.Errorf("file %s not found", src)
+	}
+
+	return CopyFile(src, dst)
 }
