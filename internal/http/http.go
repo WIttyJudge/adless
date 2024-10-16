@@ -12,24 +12,24 @@ type HTTP struct {
 	client *http.Client
 }
 
-func New(config *config.Config) *HTTP {
+func New(config *config.HTTP) *HTTP {
 	transport := &http.Transport{
 		Proxy: http.ProxyFromEnvironment,
 		Dial: (&net.Dialer{
-			Timeout: config.HTTP.Timeout,
+			Timeout: config.Timeout,
 		}).Dial,
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: true,
 		},
-		IdleConnTimeout:     config.HTTP.Timeout,
-		TLSHandshakeTimeout: config.HTTP.Timeout,
+		IdleConnTimeout:     config.Timeout,
+		TLSHandshakeTimeout: config.Timeout,
 		MaxConnsPerHost:     10,
 		MaxIdleConns:        10,
 		MaxIdleConnsPerHost: 10,
 	}
 
 	client := &http.Client{
-		Timeout:   config.HTTP.Timeout,
+		Timeout:   config.Timeout,
 		Transport: transport,
 	}
 
