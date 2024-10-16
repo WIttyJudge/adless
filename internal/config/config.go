@@ -25,10 +25,14 @@ type HTTP struct {
 	Timeout time.Duration `yaml:"timeout"`
 }
 
+// Load loads config file.
+// If config file is located at filesystem, it merges its options with
+// default one and returns the result.
+// If config file simply doesn't present at filesystem, it returns default one.
 func Load() (*Config, error) {
-	location := configLocation()
+	location := location()
 
-	config, err := readConfig(location)
+	config, err := read(location)
 	if errors.Is(err, os.ErrNotExist) {
 		log.Debug().Msg("local config file doesn't exist. Default configuration loaded")
 		return defaultConfig(), nil
@@ -46,8 +50,10 @@ func Load() (*Config, error) {
 	return config, nil
 }
 
+// LoadByUser loads config file at the location that was provided
+// by the user via config-file CLI flag.
 func LoadByUser(location string) (*Config, error) {
-	config, err := readConfig(location)
+	config, err := read(location)
 	if err != nil {
 		return nil, err
 	}
@@ -61,8 +67,8 @@ func LoadByUser(location string) (*Config, error) {
 	return config, nil
 }
 
-// configLocation returns the location of the config file
-func configLocation() string {
+// location returns the location of the config file
+func location() string {
 	if bch := os.Getenv("BARRIER_CONFIG_HOME"); bch != "" {
 		return filepath.Join(bch, "config.yml")
 	}
@@ -74,7 +80,8 @@ func configLocation() string {
 	return filepath.Join(os.Getenv("HOME"), "config", "barrier", "config.yml")
 }
 
-func readConfig(location string) (*Config, error) {
+// read reads config file by location in file system
+func read(location string) (*Config, error) {
 	data, err := os.ReadFile(location)
 	if err != nil {
 		return nil, err
@@ -88,6 +95,9 @@ func readConfig(location string) (*Config, error) {
 	return config, nil
 }
 
+// defaultConfig returns precreated configuration.
+// In case if there is no config file stored on user's filesystem,
+// default one will be used.
 func defaultConfig() *Config {
 	httpTimeout, _ := time.ParseDuration("10s")
 
