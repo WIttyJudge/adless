@@ -1,28 +1,31 @@
 package action
 
 import (
-	"barrier/internal/http"
+	"barrier/internal/action/exit"
+	"barrier/internal/hostsfile"
 	"fmt"
 
-	"github.com/rs/zerolog/log"
 	"github.com/urfave/cli/v2"
 )
 
 func (a *Action) Start(ctx *cli.Context) error {
-	httpClient := http.New(a.config)
+	processor := hostsfile.NewProcessor(a.config)
 
-	for _, blocklist := range a.config.Blocklists {
-		target := blocklist.Target
-
-		log.Info().Str("target", target).Msg("Processing blocklist..")
-
-		resp, err := httpClient.Get(target)
-		if err != nil {
-			return err
-		}
-
-		fmt.Println(resp)
+	hosts, err := hostsfile.New()
+	if err != nil {
+		return exit.Error(exit.Hostsfile, err, "failed to process hosts file")
 	}
+
+	if err := hosts.Backup(); err != nil {
+		return exit.Error(exit.Hostsfile, err, "failed to backup hosts file")
+	}
+
+	result, err := processor.Process()
+	if err != nil {
+		return err
+	}
+
+	fmt.Println(result.FormatToHostsfile())
 
 	return nil
 }

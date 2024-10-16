@@ -10,6 +10,7 @@ import (
 const (
 	Unknown = iota
 	Config
+	Hostsfile
 )
 
 // Error returns a user friendly CLI error.
