@@ -19,13 +19,18 @@ type Processor struct {
 
 // Result contains multiple parsed blocklists.
 type Result struct {
-	ParsedBlocklists []ParsedBlocklist
+	startTag           string
+	endTag             string
+	descriptionComment string
+	parsedBlocklists   []ParsedBlocklist
 }
 
 // ParsedBlocklist represents a completed result of blocklist
 // that is ready to be appended into hosts file.
 type ParsedBlocklist struct {
-	LinesContent []LineContent
+	DomainsCount int
+
+	linesContent []LineContent
 }
 
 type LineContent struct {
@@ -60,11 +65,16 @@ func (p *Processor) Process() (Result, error) {
 		}
 
 		parsedBlocklist := p.processBlocklist(fileContent)
+		log.Info().Str("target", target).Msgf("number of %d domains parsed", parsedBlocklist.DomainsCount)
+
 		parsedBlocklists = append(parsedBlocklists, parsedBlocklist)
 	}
 
 	result := Result{
-		ParsedBlocklists: parsedBlocklists,
+		startTag:           StartTag,
+		endTag:             EndTag,
+		descriptionComment: DescriptionComment,
+		parsedBlocklists:   parsedBlocklists,
 	}
 
 	return result, nil
@@ -76,6 +86,7 @@ func (p *Processor) processBlocklist(content string) ParsedBlocklist {
 	linesContent := make([]LineContent, 0, len(lines))
 
 	for _, line := range lines {
+		// remove empty spaces
 		line := strings.TrimSpace(line)
 
 		// skip empty lines and comments
@@ -100,7 +111,8 @@ func (p *Processor) processBlocklist(content string) ParsedBlocklist {
 	}
 
 	parsedBlocklist := ParsedBlocklist{
-		LinesContent: linesContent,
+		linesContent: linesContent,
+		DomainsCount: len(linesContent),
 	}
 
 	return parsedBlocklist
@@ -117,13 +129,16 @@ func (p *Processor) removeInLineComment(line string) string {
 func (r Result) FormatToHostsfile() string {
 	var builder strings.Builder
 
-	builder.WriteString("\n")
+	builder.WriteString(r.startTag)
+	builder.WriteString(r.descriptionComment)
 
-	for _, parsedBlocklist := range r.ParsedBlocklists {
-		for _, lineContent := range parsedBlocklist.LinesContent {
+	for _, parsedBlocklist := range r.parsedBlocklists {
+		for _, lineContent := range parsedBlocklist.linesContent {
 			builder.WriteString(lineContent.Format())
 		}
 	}
+
+	builder.WriteString(r.endTag)
 
 	withoutLastWhitespace := strings.TrimSuffix(builder.String(), "\n")
 

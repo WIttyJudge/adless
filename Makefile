@@ -19,3 +19,6 @@ build: build-linux
 
 build-linux:
 	GOOS=linux go build -ldflags "$(LDFLAGS)" -o $(BIN_PATH) $(SRC_PATH)
+
+clean:
+	rm -rf "${BIN_PATH}"

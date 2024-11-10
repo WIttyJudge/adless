@@ -5,23 +5,22 @@ import (
 	"barrier/internal/hostsfile"
 
 	"github.com/rs/zerolog/log"
-
 	"github.com/urfave/cli/v2"
 )
 
-func (a *Action) Restore(ctx *cli.Context) error {
-	log.Info().Msg("restoring hosts file from backup..")
-
+func (a *Action) Status(ctx *cli.Context) error {
 	hosts, err := hostsfile.New()
 	if err != nil {
 		return exit.Error(exit.HostsFile, err, "failed to process hosts file")
 	}
 
-	if err := hosts.Restore(); err != nil {
-		return exit.Error(exit.HostsFile, err, "failed to restore hosts file")
+	status := hosts.Status()
+	if status == hostsfile.Enabled {
+		log.Info().Msg("domains blocking enabled")
+		return nil
 	}
 
-	log.Info().Msg("restoring operation is successful")
+	log.Info().Msg("domains blocking disabled")
 
 	return nil
 }

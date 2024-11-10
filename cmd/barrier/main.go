@@ -48,6 +48,13 @@ func setupApp() *cli.App {
 		DisableDefaultText: true,
 	}
 
+	cli.HelpFlag = &cli.BoolFlag{
+		Name:               "help",
+		Aliases:            []string{"h"},
+		Usage:              "Show help",
+		DisableDefaultText: true,
+	}
+
 	cli.VersionPrinter = func(ctx *cli.Context) {
 		fmt.Println("Version:\t", ctx.App.Version)
 		fmt.Println("Git Commit:\t", gitCommit)
@@ -55,15 +62,8 @@ func setupApp() *cli.App {
 	}
 
 	app.CommandNotFound = func(ctx *cli.Context, command string) {
-		fmt.Printf("error: unrecognized subcommand: '%s'\n\n", command)
+		fmt.Printf("error: unrecognized command: '%s'\n\n", command)
 		fmt.Println("for more information, try '--help'.")
-	}
-
-	cli.HelpFlag = &cli.BoolFlag{
-		Name:               "help",
-		Aliases:            []string{"h"},
-		Usage:              "Show help",
-		DisableDefaultText: true,
 	}
 
 	app.Before = action.BeforeAction

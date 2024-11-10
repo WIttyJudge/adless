@@ -35,28 +35,31 @@ func (a *Action) BeforeAction(ctx *cli.Context) error {
 func (a *Action) GetCommands() []*cli.Command {
 	return []*cli.Command{
 		{
-			Name:        "start",
-			Usage:       "Start blocking",
-			Description: "",
-			Action:      a.Start,
+			Name:   "disable",
+			Usage:  "Disable domains blocking",
+			Action: a.Disable,
 		},
 		{
-			Name:        "stop",
-			Usage:       "Stop blocking",
-			Description: "",
-			Action:      a.Stop,
+			Name:   "enable",
+			Usage:  "Enable domains blocking",
+			Action: a.Enable,
+		},
+
+		{
+			Name:   "status",
+			Usage:  "Check if domains blocking enabled or not",
+			Action: a.Status,
 		},
 		{
-			Name:        "update",
-			Usage:       "Update resources",
-			Description: "",
-			Action:      a.Update,
+			Name:   "update",
+			Usage:  "Update the list of domains to be blocked",
+			Action: a.Update,
 		},
 		{
 			Name:  "restore",
-			Usage: "Restore the original hosts file from its backup",
+			Usage: "Restore hosts file from backup to its previous state",
 			Description: "" +
-				"When a `start` command is invoked, it creates a backup of the " +
+				"When a `enable`, `disable` or `update` command is invoked, it creates a backup of the " +
 				"original hosts file by copying it a backup file (hosts.backup).\n" +
 				"The `restore` command copies the backup file (hosts.backup) back to its " +
 				"original location (hosts).\n" +
