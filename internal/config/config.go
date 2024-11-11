@@ -69,6 +69,9 @@ func LoadByUser(location string) (*Config, error) {
 
 // location returns the location of the config file
 func location() string {
+	username := os.Getenv("SUDO_USER")
+	sudoUser, _ := user.Lookup(username)
+
 	if bch := os.Getenv("BARRIER_CONFIG_HOME"); bch != "" {
 		return filepath.Join(bch, "config.yml")
 	}
@@ -77,7 +80,7 @@ func location() string {
 		return filepath.Join(xdgConfig, "barrier", "config.yml")
 	}
 
-	return filepath.Join(os.Getenv("HOME"), "config", "barrier", "config.yml")
+	return filepath.Join(sudoUser.HomeDir, ".config", "barrier", "config.yml")
 }
 
 // read reads config file by location in file system
