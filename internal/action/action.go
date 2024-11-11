@@ -25,6 +25,10 @@ func (a *Action) BeforeAction(ctx *cli.Context) error {
 		zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	}
 
+	if ctx.Bool("quite") {
+		zerolog.SetGlobalLevel(zerolog.Disabled)
+	}
+
 	if err := a.loadConfig(ctx); err != nil {
 		return exit.Error(exit.Config, err, "failed to load config file")
 	}
@@ -73,12 +77,18 @@ func (a *Action) GetFlags() []cli.Flag {
 	return []cli.Flag{
 		&cli.StringFlag{
 			Name:  "config-file",
-			Usage: "Path to config file",
+			Usage: "Path to the configuration file",
 		},
 		&cli.BoolFlag{
 			Name:               "verbose",
 			Aliases:            []string{"v"},
 			Usage:              "Enable debug mode",
+			DisableDefaultText: true,
+		},
+		&cli.BoolFlag{
+			Name:               "quite",
+			Aliases:            []string{"q"},
+			Usage:              "Enable quiet mode",
 			DisableDefaultText: true,
 		},
 	}
