@@ -3,6 +3,7 @@ package config
 import (
 	"errors"
 	"os"
+	"os/user"
 	"path/filepath"
 	"time"
 
@@ -11,12 +12,14 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// Config represents the entire configuration structure
+// Config represents the entire configuration structure.
 type Config struct {
 	Blocklists []Blocklist `yaml:"blocklists"`
 	HTTP       HTTP        `yaml:"http"`
 }
 
+// Blocklist is a strcture that represents where all these domains we need to
+// block are located.
 type Blocklist struct {
 	Target string `yaml:"target"`
 }
@@ -67,7 +70,7 @@ func LoadByUser(location string) (*Config, error) {
 	return config, nil
 }
 
-// location returns the location of the config file
+// location returns the location of the config file.
 func location() string {
 	username := os.Getenv("SUDO_USER")
 	sudoUser, _ := user.Lookup(username)
@@ -83,7 +86,7 @@ func location() string {
 	return filepath.Join(sudoUser.HomeDir, ".config", "barrier", "config.yml")
 }
 
-// read reads config file by location in file system
+// read reads config file by location in file system.
 func read(location string) (*Config, error) {
 	data, err := os.ReadFile(location)
 	if err != nil {

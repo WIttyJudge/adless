@@ -18,8 +18,8 @@ const (
 )
 
 var (
-	StartTagNotFound = errors.New("start tag not found")
-	EndTagNotFound   = errors.New("end tag not found")
+	ErrStartTagNotFound = errors.New("start tag not found")
+	ErrEndTagNotFound   = errors.New("end tag not found")
 )
 
 type Status int
@@ -29,7 +29,7 @@ const (
 	Disabled
 )
 
-// File is a hosts file
+// File is a hosts file.
 type File struct {
 	file *os.File
 
@@ -37,12 +37,12 @@ type File struct {
 	backupLocation string
 }
 
-// New returns a new hostsfile wrapper
+// New returns a new hostsfile wrapper.
 func New() (*File, error) {
 	location := location()
 	backupLocation := location + ".backup"
 
-	osFile, err := os.OpenFile(location, os.O_WRONLY|os.O_APPEND, 0665)
+	osFile, err := os.OpenFile(location, os.O_WRONLY|os.O_APPEND, 0o665)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open file: %w", err)
 	}
@@ -56,7 +56,7 @@ func New() (*File, error) {
 	return file, nil
 }
 
-// Backup creates a copy of hosts file with .backup suffix
+// Backup creates a copy of hosts file with .backup suffix.
 func (f *File) Backup() error {
 	log.Debug().Str("location", f.backupLocation).Msg("backup hosts file..")
 	return fsutil.CopyFile(f.fileLocation, f.backupLocation)
@@ -119,12 +119,12 @@ func (f *File) RemoveDomainsBlocking() error {
 
 	startIndex := strings.Index(content, StartTag)
 	if startIndex == -1 {
-		return StartTagNotFound
+		return ErrStartTagNotFound
 	}
 
 	endIndex := strings.Index(content, EndTag)
 	if endIndex == -1 {
-		return EndTagNotFound
+		return ErrEndTagNotFound
 	}
 	endIndex += len(EndTag)
 
@@ -135,7 +135,6 @@ func (f *File) RemoveDomainsBlocking() error {
 	}
 
 	return nil
-
 }
 
 func location() string {
@@ -143,6 +142,5 @@ func location() string {
 		// TODO: add for windows as well
 	}
 
-	return "/home/wittyjudge/projects/golang/src/barrier/test/hosts"
-	// return "/etc/hosts"
+	return "/etc/hosts"
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func (a *Action) Status(ctx *cli.Context) error {
+func (a *Action) Status(_ *cli.Context) error {
 	hosts, err := hostsfile.New()
 	if err != nil {
 		return exit.Error(exit.HostsFile, err, "failed to process hosts file")

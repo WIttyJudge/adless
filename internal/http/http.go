@@ -2,7 +2,6 @@ package http
 
 import (
 	"barrier/internal/config"
-	"crypto/tls"
 	"io"
 	"net"
 	"net/http"
@@ -18,9 +17,6 @@ func New(config *config.HTTP) *HTTP {
 		Dial: (&net.Dialer{
 			Timeout: config.Timeout,
 		}).Dial,
-		TLSClientConfig: &tls.Config{
-			InsecureSkipVerify: true,
-		},
 		IdleConnTimeout:     config.Timeout,
 		TLSHandshakeTimeout: config.Timeout,
 		MaxConnsPerHost:     10,

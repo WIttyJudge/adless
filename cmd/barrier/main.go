@@ -61,7 +61,7 @@ func setupApp() *cli.App {
 		fmt.Println("Build Date:\t", buildDate)
 	}
 
-	app.CommandNotFound = func(ctx *cli.Context, command string) {
+	app.CommandNotFound = func(_ *cli.Context, command string) {
 		fmt.Printf("error: unrecognized command: '%s'\n\n", command)
 		fmt.Println("for more information, try '--help'.")
 	}

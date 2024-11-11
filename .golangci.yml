@@ -1,0 +1,80 @@
+linters:
+  enable:
+    # Drop-in replacement of `golint`.
+    - revive
+
+    # Forces to put `.` at the end of the comment. Code is poetry.
+    - godot
+
+    # Fix all the misspells, amazing thing.
+    - misspell
+
+    # Might not be that important but I prefer to keep all of them.
+    # `gofumpt` is amazing, kudos to Daniel Marti https://github.com/mvdan/gofumpt
+    - gofmt
+    - gofumpt
+    - goimports
+
+    # Forces comment why another check is disabled.
+    - nolintlint
+
+    # Remove unnecessary type conversions.
+    - unconvert
+
+    # Reports unused function parameters.
+    - unparam
+
+    # Detect the possibility to use variables/constants from stdlib.
+    - usestdlibvars
+
+    # Checks whether HTTP response body is closed successfully.
+    - bodyclose
+
+    # Checks `Err-` prefix for var and `-Error` suffix for error type.
+    - errname
+
+    # Suggests to use `%w` for error-wrapping.
+    - errorlint
+
+    # Forces to not skip error check.
+    - errcheck
+
+    # Check struct tags.
+    - tagliatelle
+
+    # Finds slices that could potentially be pre-allocated.
+    # Small performance win + cleaner code.
+    - prealloc
+
+    # Linter that specializes in simplifying code.
+    - gosimple
+
+    # Official Go tool. Must have.
+    - govet
+
+    # Finds naked/bare returns and requires change them.
+    - nakedret
+
+    # Finds the code that returns nil even if it checks that
+    # the error is not nil.
+    - nilerr
+
+    # Checks that there is no simultaneous return of nil error
+    # and an invalid value.
+    - nilnil
+
+    # Finds shadowing of Go's predeclared identifiers.
+    - predeclared
+
+    # Finds wasted assignment statements.
+    - wastedassign
+
+    # Detects when assignments to existing variables are not used
+    # Last week I caught a bug with it.
+    - ineffassign
+
+    # Test-related checks. All of them are good.
+    # - tenv
+    # - testableexamples
+    # - thelper
+    # - tparallel

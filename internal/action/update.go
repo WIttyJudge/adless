@@ -8,7 +8,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func (a *Action) Update(ctx *cli.Context) error {
+func (a *Action) Update(_ *cli.Context) error {
 	processor := hostsfile.NewProcessor(a.config)
 
 	hosts, err := hostsfile.New()

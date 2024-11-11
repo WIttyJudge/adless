@@ -9,7 +9,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-func (a *Action) Restore(ctx *cli.Context) error {
+func (a *Action) Restore(_ *cli.Context) error {
 	log.Info().Msg("restoring hosts file from backup..")
 
 	hosts, err := hostsfile.New()
