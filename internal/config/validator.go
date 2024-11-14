@@ -15,7 +15,7 @@ func Validate(config *Config) error {
 
 	for _, blocklist := range config.Blocklists {
 		url := blocklist.Target
-		if !checkInvalidURLSymbolsUsage(url) {
+		if hasInvalidURLSymbols(url) {
 			return fmt.Errorf("invalid blocklist target provided: %s", url)
 		}
 	}
@@ -23,12 +23,8 @@ func Validate(config *Config) error {
 	return nil
 }
 
-// checkInvalidURLSymbolsUsage checks for characters NOT allowed in URL.
-func checkInvalidURLSymbolsUsage(url string) bool {
-	matched, err := regexp.MatchString("[^a-zA-Z0-9:/?&%=~._()-;]", url)
-	if err != nil {
-		return true
-	}
-
-	return !matched
+// hasInvalidURLSymbols checks for characters NOT allowed in URL.
+func hasInvalidURLSymbols(url string) bool {
+	matched, _ := regexp.MatchString("[^a-zA-Z0-9:/?&%=~._()-;]", url)
+	return matched
 }

@@ -12,6 +12,8 @@ LDFLAGS=-w -s \
 		-X main.gitCommit=$(GIT_COMMIT) \
 		-X main.buildDate=$(BUILD_DATE)
 
+.PHONY: run build test coverage clean
+
 run:
 	go run $(SRC_PATH)
 
@@ -19,6 +21,13 @@ build: build-linux
 
 build-linux:
 	GOOS=linux go build -ldflags "$(LDFLAGS)" -o $(BIN_PATH) $(SRC_PATH)
+
+test:
+	go test -v ./...
+
+coverage:
+	go test ./... -coverprofile=coverage.out =covermode=atomic
+	go tool cover -html=coverage.out -o coverage.html
 
 clean:
 	rm -rf "${BIN_PATH}"
