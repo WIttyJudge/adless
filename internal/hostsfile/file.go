@@ -64,7 +64,7 @@ func (f *File) Backup() error {
 
 // Restore restores the original hosts file from its backup.
 func (f *File) Restore() error {
-	return fsutil.CopyFileIfExist(f.backupLocation, f.fileLocation)
+	return fsutil.CopyFile(f.backupLocation, f.fileLocation)
 }
 
 // Write writes content to file

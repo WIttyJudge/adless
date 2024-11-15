@@ -14,8 +14,7 @@ func (a *Action) Status(_ *cli.Context) error {
 		return exit.Error(exit.HostsFile, err, "failed to process hosts file")
 	}
 
-	status := hosts.Status()
-	if status == hostsfile.Enabled {
+	if hosts.Status() == hostsfile.Enabled {
 		log.Info().Msg("domains blocking enabled")
 		return nil
 	}

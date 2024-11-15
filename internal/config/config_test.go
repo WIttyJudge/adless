@@ -11,7 +11,7 @@ import (
 )
 
 func TestLoad(t *testing.T) {
-	td, err := os.MkdirTemp("", "barrier-")
+	td, err := os.MkdirTemp("", "barrier-config")
 	defer os.RemoveAll(td)
 
 	require.NoError(t, err)
@@ -80,7 +80,7 @@ func TestLoad(t *testing.T) {
 }
 
 func TestLoadByUser(t *testing.T) {
-	td, err := os.MkdirTemp("", "barrier-")
+	td, err := os.MkdirTemp("", "barrier-config")
 	defer os.RemoveAll(td)
 
 	require.NoError(t, err)
@@ -157,7 +157,7 @@ func TestLocation(t *testing.T) {
 }
 
 func TestRead(t *testing.T) {
-	td, err := os.MkdirTemp("", "barrier-")
+	td, err := os.MkdirTemp("", "barrier-config")
 	defer os.RemoveAll(td)
 
 	require.NoError(t, err)
