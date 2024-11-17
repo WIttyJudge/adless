@@ -40,7 +40,7 @@ type LineContent struct {
 
 // NewProcessor initializes Processor structure.
 func NewProcessor(config *config.Config) *Processor {
-	httpClient := http.New(&config.HTTP)
+	httpClient := http.New()
 
 	return &Processor{
 		config:     config,

@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/user"
 	"path/filepath"
-	"time"
 
 	"github.com/charmbracelet/x/editor"
 	"github.com/rs/zerolog/log"
@@ -17,17 +16,12 @@ import (
 // Config represents the entire configuration structure.
 type Config struct {
 	Blocklists []Blocklist `yaml:"blocklists"`
-	HTTP       HTTP        `yaml:"http"`
 }
 
 // Blocklist is a strcture that represents where all these domains we need to
 // block are located.
 type Blocklist struct {
 	Target string `yaml:"target"`
-}
-
-type HTTP struct {
-	Timeout time.Duration `yaml:"timeout"`
 }
 
 // Load loads config file.
@@ -187,14 +181,9 @@ func homeDir() string {
 // In case if there is no config file stored on user's filesystem,
 // default one will be used.
 func defaultConfig() *Config {
-	httpTimeout, _ := time.ParseDuration("10s")
-
 	return &Config{
 		Blocklists: []Blocklist{
 			{Target: "https://raw.githubusercontent.com/StevenBlack/hosts/master/data/StevenBlack/hosts"},
-		},
-		HTTP: HTTP{
-			Timeout: httpTimeout,
 		},
 	}
 }

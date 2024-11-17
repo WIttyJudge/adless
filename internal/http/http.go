@@ -1,31 +1,33 @@
 package http
 
 import (
-	"barrier/internal/config"
 	"io"
 	"net"
 	"net/http"
+	"time"
 )
+
+const Timeout = 10 * time.Second
 
 type HTTP struct {
 	client *http.Client
 }
 
-func New(config *config.HTTP) *HTTP {
+func New() *HTTP {
 	transport := &http.Transport{
 		Proxy: http.ProxyFromEnvironment,
 		Dial: (&net.Dialer{
-			Timeout: config.Timeout,
+			Timeout: Timeout,
 		}).Dial,
-		IdleConnTimeout:     config.Timeout,
-		TLSHandshakeTimeout: config.Timeout,
+		IdleConnTimeout:     Timeout,
+		TLSHandshakeTimeout: Timeout,
 		MaxConnsPerHost:     10,
 		MaxIdleConns:        10,
 		MaxIdleConnsPerHost: 10,
 	}
 
 	client := &http.Client{
-		Timeout:   config.Timeout,
+		Timeout:   Timeout,
 		Transport: transport,
 	}
 
