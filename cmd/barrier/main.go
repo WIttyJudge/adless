@@ -37,7 +37,7 @@ func setupApp() *cli.App {
 
 	app := cli.NewApp()
 	app.Name = "barrier"
-	app.Usage = "Local ad blocker writter in Go"
+	app.Usage = "Local domains blocker writter in Go"
 	app.UseShortOptionHandling = true
 	app.Version = version
 

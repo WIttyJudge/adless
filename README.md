@@ -55,7 +55,7 @@ but you can customize its location using the following environment variables:
 To create a local configuration file, run:
 
 ```bash
-barrier --write-config
+barrier config init
 ```
 
 # TODO:

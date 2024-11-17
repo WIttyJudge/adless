@@ -39,6 +39,30 @@ func (a *Action) BeforeAction(ctx *cli.Context) error {
 func (a *Action) GetCommands() []*cli.Command {
 	return []*cli.Command{
 		{
+			Name:  "config",
+			Usage: "Manage the configuration file",
+			Description: "" +
+				"This command provides tools to manage the configuration file.\n" +
+				"You can view the current configuration, edit it using your preferred editor, or initialize a default configuration file.\n" +
+				"By default, running this command without arguments will print the entire configuration.",
+			Action: a.Config,
+			Subcommands: []*cli.Command{
+				{
+					Name:   "edit",
+					Action: a.ConfigEdit,
+					Usage:  "Edit the configuration file using your preferred editor",
+					Description: "" +
+						"Opens the configuration file in the editor specified by the $EDITOR environment variable.\n" +
+						"If the configuration file doesn't exist, it will be created with default settings.",
+				},
+				{
+					Name:   "init",
+					Usage:  "Create a default config file locally",
+					Action: a.ConfigInit,
+				},
+			},
+		},
+		{
 			Name:   "disable",
 			Usage:  "Disable domains blocking",
 			Action: a.Disable,

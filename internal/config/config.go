@@ -2,11 +2,13 @@ package config
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"os/user"
 	"path/filepath"
 	"time"
 
+	"github.com/charmbracelet/x/editor"
 	"github.com/rs/zerolog/log"
 
 	"gopkg.in/yaml.v3"
@@ -37,7 +39,7 @@ func Load() (*Config, error) {
 
 	config, err := read(location)
 	if errors.Is(err, os.ErrNotExist) {
-		log.Debug().Msg("local config file doesn't exist. Default configuration loaded")
+		log.Debug().Msg("local config file doesn't exist. Default config loaded")
 		return defaultConfig(), nil
 	}
 	if err != nil {
@@ -48,7 +50,7 @@ func Load() (*Config, error) {
 		return nil, err
 	}
 
-	log.Debug().Str("config", location).Msg("config file loaded")
+	log.Debug().Str("location", location).Msg("config file loaded")
 
 	return config, nil
 }
@@ -65,9 +67,78 @@ func LoadByUser(location string) (*Config, error) {
 		return nil, err
 	}
 
-	log.Debug().Str("config", location).Msg("config file loaded")
+	log.Debug().Str("location", location).Msg("config file loaded")
 
 	return config, nil
+}
+
+// Print prints config to stdout.
+func (c *Config) Print() {
+	out, _ := yaml.Marshal(c)
+	fmt.Print(string(out))
+}
+
+// Init saves default configuration file locally in case if
+// it doesn't exist yet.
+func Init() error {
+	location := location()
+	dirs := filepath.Dir(location)
+
+	if _, err := os.Stat(location); !os.IsNotExist(err) {
+		log.Debug().Str("location", location).Msg("config file has already been initialized")
+		return nil
+	}
+
+	config, err := yaml.Marshal(defaultConfig())
+	if err != nil {
+		return err
+	}
+
+	if err := os.MkdirAll(dirs, 0o700); err != nil {
+		return err
+	}
+
+	if err := os.Chmod(dirs, 0o777); err != nil {
+		return err
+	}
+
+	file, err := os.Create(location)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	if _, err := file.Write(config); err != nil {
+		return err
+	}
+
+	if err := os.Chmod(location, 0o777); err != nil {
+		return err
+	}
+
+	log.Info().Str("location", location).Msg("config file has been initialized successfully")
+
+	return nil
+}
+
+// Edit opens config in text editor.
+func Edit() error {
+	location := location()
+
+	c, err := editor.Cmd("barrier", location)
+	if err != nil {
+		return err
+	}
+
+	c.Stdin = os.Stdin
+	c.Stdout = os.Stdout
+	c.Stderr = os.Stderr
+
+	if err := c.Run(); err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // location returns the location of the config file.
