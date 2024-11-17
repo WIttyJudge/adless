@@ -18,15 +18,16 @@ yay -S barrier
 
 ```
 NAME:
-   barrier - Local ad blocker writter in Go
+   barrier - Local domains blocker writter in Go
 
 USAGE:
    barrier [global options] command [command options]
 
 VERSION:
-   1.0.0
+   v1.0.0
 
 COMMANDS:
+   config   Manage the configuration file
    disable  Disable domains blocking
    enable   Enable domains blocking
    restore  Restore hosts file from backup to its previous state
