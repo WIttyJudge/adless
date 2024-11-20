@@ -2,4 +2,4 @@ package hostsfile
 
 import "testing"
 
-func TestIsLineComment(t *testing.T) {}
+func TestIsLineComment(_ *testing.T) {}

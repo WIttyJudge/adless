@@ -3,6 +3,7 @@ module barrier
 go 1.22.0
 
 require (
+	github.com/charmbracelet/x/editor v0.1.0
 	github.com/rs/zerolog v1.33.0
 	github.com/stretchr/testify v1.9.0
 	github.com/urfave/cli/v2 v2.27.4
@@ -10,7 +11,6 @@ require (
 )
 
 require (
-	github.com/charmbracelet/x/editor v0.1.0 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.4 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect

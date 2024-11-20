@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"runtime"
 	"strings"
 
 	"github.com/rs/zerolog/log"
@@ -138,9 +137,9 @@ func (f *File) RemoveDomainsBlocking() error {
 }
 
 func location() string {
-	if runtime.GOOS == "windows" {
-		// TODO: add for windows as well
-	}
+	// TODO: add for windows as well
+	// if runtime.GOOS == "windows" {
+	// }
 
 	return "/etc/hosts"
 }
