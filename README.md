@@ -50,7 +50,7 @@ The default configuration file is located at `$HOME/.config/barrier/config.yml`,
 but you can customize its location using the following environment variables:
 
 - BARRIER_CONFIG_PATH - Specifies the full path to the configuration file.
-- BARRIER_CONFIG_HOME -Specifies the folder where the `config.yml` file is located.
+- BARRIER_CONFIG_HOME - Specifies the folder where the `config.yml` file is located.
 - XDG_CONFIG_HOME - Specifies the base directory for user-specific configuration files. Barrier will look for `barrier/config.yml` within this directory.
 
 To create a local configuration file, run:

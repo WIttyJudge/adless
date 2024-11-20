@@ -35,7 +35,7 @@ func (a *Action) Update(_ *cli.Context) error {
 		return exit.Error(exit.HostsFile, err, "failed to write to hosts file")
 	}
 
-	log.Info().Msg("domain blocking successfully updated and enabled")
+	log.Info().Msg("domains blocking successfully updated and enabled")
 
 	return nil
 }
