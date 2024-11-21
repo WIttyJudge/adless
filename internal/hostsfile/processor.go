@@ -12,9 +12,9 @@ import (
 
 const localhost = "127.0.0.1"
 
-// Processor is a structure that is responsible for processing blocklists.
+// Processor is a structure that is responsible for processing blocklists,
+// whitelists and preparing the result to save to hosts file.
 type Processor struct {
-	wg         *sync.WaitGroup
 	config     *config.Config
 	httpClient *http.HTTP
 }
@@ -24,12 +24,12 @@ type Result struct {
 	startTag           string
 	endTag             string
 	descriptionComment string
-	domainsBlocklist   map[string]LineContent
+	domains            map[string]LineContent
 }
 
-// BlocklistResult represents a parsed result of blocklist
+// TargetResult represents a parsed result of blocklist
 // that is ready to be appended into hosts file.
-type BlocklistResult struct {
+type TargetResult struct {
 	DomainsCount int
 
 	linesContent map[string]LineContent
@@ -45,7 +45,6 @@ func NewProcessor(config *config.Config) *Processor {
 	httpClient := http.New()
 
 	return &Processor{
-		wg:         &sync.WaitGroup{},
 		config:     config,
 		httpClient: httpClient,
 	}
@@ -54,17 +53,42 @@ func NewProcessor(config *config.Config) *Processor {
 // Process processes blocklists and returns a finished result
 // that is ready to save to hosts file.
 func (p *Processor) Process() (Result, error) {
-	blocklistsResult := make([]BlocklistResult, len(p.config.Blocklists))
-	totalDomainsCount := 0
+	wg := &sync.WaitGroup{}
+	blocklistsResult := p.processBlocklists(wg)
+	whitelistsResult := p.processWhitelists(wg)
+	wg.Wait()
+
+	// Merges the results of all targets into one map, where the key
+	// is a domain name and the value is a content of the line.
+	// Using a domain as a key allows to avoid duplicates.
+	blocklistDomains := p.targetDomains(blocklistsResult)
+	whitelistDomains := p.targetDomains(whitelistsResult)
+
+	p.applyWhitelist(blocklistDomains, whitelistDomains)
+
+	result := Result{
+		startTag:           StartTag,
+		endTag:             EndTag,
+		descriptionComment: DescriptionComment,
+		domains:            blocklistDomains,
+	}
+
+	log.Info().Msgf("total number of uniq domains: %d", len(blocklistDomains))
+
+	return result, nil
+}
+
+func (p *Processor) processBlocklists(wg *sync.WaitGroup) []TargetResult {
+	blocklistsResult := make([]TargetResult, len(p.config.Blocklists))
 
 	for i, blocklist := range p.config.Blocklists {
 		i := i
 		target := blocklist.Target
 
-		p.wg.Add(1)
+		wg.Add(1)
 
 		go func() {
-			defer p.wg.Done()
+			defer wg.Done()
 
 			blocklistResult, err := p.processBlocklist(target)
 			if err != nil {
@@ -73,42 +97,75 @@ func (p *Processor) Process() (Result, error) {
 			}
 
 			blocklistsResult[i] = blocklistResult
-			totalDomainsCount += blocklistResult.DomainsCount
 		}()
 	}
 
-	p.wg.Wait()
-
-	domainsBlocklist := p.domainsBlocklist(blocklistsResult)
-
-	result := Result{
-		startTag:           StartTag,
-		endTag:             EndTag,
-		descriptionComment: DescriptionComment,
-		domainsBlocklist:   domainsBlocklist,
-	}
-
-	log.Info().Msgf("total number of uniq domains: %d", len(domainsBlocklist))
-
-	return result, nil
+	return blocklistsResult
 }
 
-func (p *Processor) processBlocklist(target string) (BlocklistResult, error) {
+func (p *Processor) processWhitelists(wg *sync.WaitGroup) []TargetResult {
+	whitelistsResult := make([]TargetResult, len(p.config.Blocklists))
+
+	for i, whitelist := range p.config.Whitelists {
+		i := i
+		target := whitelist.Target
+
+		wg.Add(1)
+
+		go func() {
+			defer wg.Done()
+
+			whitelistResult, err := p.processWhitelist(target)
+			if err != nil {
+				log.Error().Err(err).Str("target", target).Msg("failed to process whitelist")
+				return
+			}
+
+			whitelistsResult[i] = whitelistResult
+		}()
+	}
+
+	return whitelistsResult
+}
+
+func (p *Processor) processBlocklist(target string) (TargetResult, error) {
 	log.Info().Str("target", target).Msg("processing blocklist..")
 
+	blocklistResult, err := p.proccessListTarget(target)
+	if err != nil {
+		return TargetResult{}, err
+	}
+
+	log.Info().Str("target", target).Msgf("number of domains: %d", blocklistResult.DomainsCount)
+
+	return blocklistResult, nil
+}
+
+func (p *Processor) processWhitelist(target string) (TargetResult, error) {
+	log.Info().Str("target", target).Msg("processing whitelist..")
+
+	whitelistResult, err := p.proccessListTarget(target)
+	if err != nil {
+		return TargetResult{}, err
+	}
+
+	log.Info().Str("target", target).Msgf("number of domains: %d", whitelistResult.DomainsCount)
+
+	return whitelistResult, nil
+}
+
+func (p *Processor) proccessListTarget(target string) (TargetResult, error) {
 	fileContent, err := p.httpClient.Get(target)
 	if err != nil {
-		return BlocklistResult{}, err
+		return TargetResult{}, err
 	}
 
 	linesContent := p.processContent(fileContent)
 
-	blocklistResult := BlocklistResult{
+	blocklistResult := TargetResult{
 		DomainsCount: len(linesContent),
 		linesContent: linesContent,
 	}
-
-	log.Info().Str("target", target).Msgf("number of domains: %d", blocklistResult.DomainsCount)
 
 	return blocklistResult, nil
 }
@@ -155,16 +212,22 @@ func (p *Processor) processContent(content string) map[string]LineContent {
 	return linesContent
 }
 
-func (p *Processor) domainsBlocklist(blocklistsResult []BlocklistResult) map[string]LineContent {
-	domainsBlocklist := make(map[string]LineContent)
+func (p *Processor) targetDomains(targetResult []TargetResult) map[string]LineContent {
+	targetDomains := make(map[string]LineContent)
 
-	for _, result := range blocklistsResult {
+	for _, result := range targetResult {
 		for _, line := range result.linesContent {
-			domainsBlocklist[line.domainName] = line
+			targetDomains[line.domainName] = line
 		}
 	}
 
-	return domainsBlocklist
+	return targetDomains
+}
+
+func (p *Processor) applyWhitelist(blocklistDomains, whitelistDomains map[string]LineContent) {
+	for key := range whitelistDomains {
+		delete(blocklistDomains, key)
+	}
 }
 
 func (p *Processor) isLineComment(line string) bool {
@@ -200,7 +263,7 @@ func (r Result) FormatToHostsfile() string {
 	builder.WriteString(r.startTag)
 	builder.WriteString(r.descriptionComment)
 
-	for _, domain := range r.domainsBlocklist {
+	for _, domain := range r.domains {
 		builder.WriteString(domain.Format())
 	}
 

@@ -61,5 +61,4 @@ barrier config init
 
 # TODO:
 
-1. Whitelist
-2. Options to add path to local blocklists and whitelists
+1. Options to add path to local blocklists and whitelists
