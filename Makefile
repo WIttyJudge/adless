@@ -1,7 +1,7 @@
 NAME=barrier
 
 SRC_PATH=./cmd/$(NAME)
-BIN_PATH=./build/$(NAME)
+BUILD_PATH=./build/$(NAME)
 
 VERSION=$(shell git describe --abbrev=0 2>/dev/null || echo -n "unknown")
 GIT_COMMIT=$(shell git rev-parse --short HEAD 2>/dev/null || echo -n "unknown")
@@ -20,7 +20,16 @@ run:
 build: build-linux
 
 build-linux:
-	GOOS=linux go build -ldflags "$(LDFLAGS)" -o $(BIN_PATH) $(SRC_PATH)
+	GOOS=linux go build -ldflags "$(LDFLAGS)" -o $(BUILD_PATH) $(SRC_PATH)
+
+build-freebsd:
+	GOOS=freebsd go build -ldflags "$(LDFLAGS)" -o $(BUILD_PATH).bin $(SRC_PATH)
+
+build-windows:
+	GOOS=windows go build -ldflags "$(LDFLAGS)" -o $(BUILD_PATH).exe $(SRC_PATH)
+
+build-darwin:
+	GOOS=darwin go build -ldflags "$(LDFLAGS)" -o $(BUILD_PATH).osx $(SRC_PATH)
 
 test:
 	go test -v ./...
@@ -30,5 +39,8 @@ coverage:
 	go tool cover -html=coverage.out -o coverage.html
 
 clean:
-	rm -rf "${BIN_PATH}"
+	rm -rf ${BUILD_PATH}
+	rm -rf ${BUILD_PATH}.bin
+	rm -rf ${BUILD_PATH}.exe
+	rm -rf dist/
 	rm -f coverage.out coverage.html

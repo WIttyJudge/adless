@@ -27,3 +27,5 @@ go.work.sum
 build/
 
 coverage.*
+
+dist/
