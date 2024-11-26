@@ -4,6 +4,7 @@ import (
 	"barrier/internal/config"
 	"barrier/internal/http"
 	"fmt"
+	"slices"
 	"strings"
 	"sync"
 
@@ -174,31 +175,16 @@ func (p *Processor) processContent(content string) map[string]LineContent {
 	lines := strings.Split(content, "\n")
 	linesContent := make(map[string]LineContent)
 
-	for _, line := range lines {
-		// remove empty spaces
-		line := strings.TrimSpace(line)
+	for _, rawLine := range lines {
+		line := p.normalizeLine(rawLine)
 
-		// skip empty lines, comments, ABP comments and ABP headers
-		if line == "" || p.isLineComment(line) || p.isABPComment(line) || p.isABPHeader(line) {
+		if p.shouldSkipLine(line) {
 			continue
 		}
 
-		// remove a comment in the middle of line
-		line = p.removeInLineComment(line)
-
-		// Convert all characters to lowercase
-		line = strings.ToLower(line)
-
-		if p.isABPDomain(line) {
-			line = p.parseABPDomain(line)
-		}
-
-		var domainName string
-		parts := strings.Fields(line)
-		if len(parts) == 1 {
-			domainName = parts[0]
-		} else {
-			domainName = parts[1]
+		domainName := p.extractDomain(line)
+		if p.IsSkippedDomain(domainName) {
+			continue
 		}
 
 		lineContent := LineContent{
@@ -230,11 +216,58 @@ func (p *Processor) applyWhitelist(blocklistDomains, whitelistDomains map[string
 	}
 }
 
+// 1. Remove empty spaces.
+// 2. Remove a comment in the middle of line.
+// 3. Convert all characters to lowercase.
+func (p *Processor) normalizeLine(rawLine string) string {
+	line := strings.TrimSpace(rawLine)
+	line = p.removeInLineComment(line)
+	line = strings.ToLower(line)
+
+	return line
+}
+
+// skip empty lines, comments, ABP comments and ABP headers.
+func (p *Processor) shouldSkipLine(line string) bool {
+	return line == "" || p.isLineComment(line) || p.isABPComment(line) || p.isABPHeader(line)
+}
+
+func (p *Processor) removeInLineComment(line string) string {
+	return strings.Split(line, "#")[0]
+}
+
+func (p *Processor) parseABPDomain(line string) string {
+	line = strings.TrimPrefix(line, "||")
+	line = strings.TrimSuffix(line, "^")
+	return line
+}
+
+func (p *Processor) extractDomain(line string) string {
+	if p.isABPDomain(line) {
+		line = p.parseABPDomain(line)
+	}
+
+	var domainName string
+	parts := strings.Fields(line)
+	if len(parts) == 1 {
+		domainName = parts[0]
+	} else {
+		domainName = parts[1]
+	}
+
+	return domainName
+}
+
 func (p *Processor) isLineComment(line string) bool {
 	return strings.HasPrefix(line, "#")
 }
 
+// supported ABP style: ||subdomain.domain.tlp^
 // Example: https://raw.githubusercontent.com/hagezi/dns-blocklists/main/adblock/light.txt
+func (p *Processor) isABPDomain(line string) bool {
+	return strings.HasPrefix(line, "||") && strings.HasSuffix(line, "^")
+}
+
 func (p *Processor) isABPComment(line string) bool {
 	return strings.HasPrefix(line, "!")
 }
@@ -243,18 +276,25 @@ func (p *Processor) isABPHeader(line string) bool {
 	return strings.HasPrefix(line, "[")
 }
 
-func (p *Processor) removeInLineComment(line string) string {
-	return strings.Split(line, "#")[0]
-}
+// IsSkippedDomain checks if a domain is in the skip list.
+// Some lists (i.e StevenBlack's) contain these as they are supposed to be used as HOST.
+func (p *Processor) IsSkippedDomain(domain string) bool {
+	skipList := []string{
+		"localhost",
+		"localhost.localdomain",
+		"local",
+		"broadcasthost",
+		"ip6-localhost",
+		"ip6-loopback",
+		"lo0 localhost",
+		"ip6-localnet",
+		"ip6-mcastprefix",
+		"ip6-allnodes",
+		"ip6-allrouters",
+		"ip6-allhosts",
+	}
 
-func (p *Processor) isABPDomain(line string) bool {
-	return strings.HasPrefix(line, "||") && strings.HasSuffix(line, "^")
-}
-
-func (p *Processor) parseABPDomain(line string) string {
-	line = strings.TrimPrefix(line, "||")
-	line = strings.TrimSuffix(line, "^")
-	return line
+	return slices.Contains(skipList, domain)
 }
 
 func (r Result) FormatToHostsfile() string {
