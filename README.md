@@ -6,13 +6,17 @@ Instead, it collects domains from different sources, combines them, and updates 
 
 # Installation
 
-Head for the [releases page](https://github.com/wittyjudge/barrier/releases) and download the binary for your system.
+## Package manager
 
-Arch Linux:
+Arch Linux (AUR):
 
 ```bash
 yay -S barrier
 ```
+
+## Manual Installation
+
+Download a binary from the [releases page](https://github.com/WIttyJudge/barrier/releases) for Linux, macOS or Windows.
 
 # Usage
 
@@ -37,7 +41,7 @@ COMMANDS:
 
 GLOBAL OPTIONS:
    --config-file value  Path to the configuration file
-   --quite, -q          Enable quiet mode
+   --quiet, -q          Enable quiet mode
    --verbose, -v        Enable debug mode
    --help, -h           Show help
    --version, -V        Print the version
@@ -47,7 +51,7 @@ GLOBAL OPTIONS:
 
 Barrier supports reading and writing configuration files.
 The default configuration file is located at `$HOME/.config/barrier/config.yml`,
-but you can customize its location using the following environment variables:
+but it can be redefined using `--config` flag or the following environment variables:
 
 - BARRIER_CONFIG_PATH - Specifies the full path to the configuration file.
 - BARRIER_CONFIG_HOME - Specifies the folder where the `config.yml` file is located.

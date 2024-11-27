@@ -25,7 +25,7 @@ func (a *Action) BeforeAction(ctx *cli.Context) error {
 		zerolog.SetGlobalLevel(zerolog.DebugLevel)
 	}
 
-	if ctx.Bool("quite") {
+	if ctx.Bool("quiet") {
 		zerolog.SetGlobalLevel(zerolog.Disabled)
 	}
 
@@ -42,15 +42,15 @@ func (a *Action) GetCommands() []*cli.Command {
 			Name:  "config",
 			Usage: "Manage the configuration file",
 			Description: "" +
-				"This command provides tools to manage the configuration file.\n" +
-				"You can view the current configuration, edit it using your preferred editor, or initialize a default configuration file.\n" +
+				"The command allows you to view the current configuration, edit it using " +
+				"your preferred editor, or initialize a default configuration file.\n" +
 				"By default, running this command without arguments will print the entire configuration.",
 			Action: a.Config,
 			Subcommands: []*cli.Command{
 				{
 					Name:   "edit",
 					Action: a.ConfigEdit,
-					Usage:  "Edit the configuration file using your preferred editor",
+					Usage:  "Edit the configuration file",
 					Description: "" +
 						"Opens the configuration file in the editor specified by the $EDITOR environment variable.\n" +
 						"If the configuration file doesn't exist, it will be created with default settings.",
@@ -88,7 +88,7 @@ func (a *Action) GetCommands() []*cli.Command {
 			Usage: "Restore hosts file from backup to its previous state",
 			Description: "" +
 				"When a `enable`, `disable` or `update` command is invoked, it creates a backup of the " +
-				"original hosts file by copying it a backup file (hosts.backup).\n" +
+				"original hosts file by copying it to backup file (hosts.backup).\n" +
 				"The `restore` command copies the backup file (hosts.backup) back to its " +
 				"original location (hosts).\n" +
 				"Backup file must already exist to perform a command successfully.",
@@ -110,7 +110,7 @@ func (a *Action) GetFlags() []cli.Flag {
 			DisableDefaultText: true,
 		},
 		&cli.BoolFlag{
-			Name:               "quite",
+			Name:               "quiet",
 			Aliases:            []string{"q"},
 			Usage:              "Enable quiet mode",
 			DisableDefaultText: true,
