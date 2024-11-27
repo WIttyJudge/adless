@@ -1,7 +1,7 @@
 package main
 
 import (
-	"barrier/internal/action"
+	"adless/internal/action"
 	"fmt"
 	"os"
 	"sort"
@@ -36,7 +36,7 @@ func setupApp() *cli.App {
 	action := action.New()
 
 	app := cli.NewApp()
-	app.Name = "barrier"
+	app.Name = "adless"
 	app.Usage = "Local domains blocker writter in Go"
 	app.UseShortOptionHandling = true
 	app.Version = version

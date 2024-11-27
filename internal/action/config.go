@@ -1,8 +1,8 @@
 package action
 
 import (
-	"barrier/internal/action/exit"
-	"barrier/internal/config"
+	"adless/internal/action/exit"
+	"adless/internal/config"
 
 	"github.com/urfave/cli/v2"
 )

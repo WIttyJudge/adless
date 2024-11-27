@@ -1,6 +1,6 @@
-# barrier
+# adless
 
-Barrier is an easy-to-use CLI tool that blocks domains by using your system's hosts file.
+Adless is an easy-to-use CLI tool that blocks domains by using your system's hosts file.
 Its main advantage is that it operates without running any background processes.
 Instead, it collects domains from different sources, combines them, and updates your hosts file.
 
@@ -11,21 +11,21 @@ Instead, it collects domains from different sources, combines them, and updates 
 Arch Linux (AUR):
 
 ```bash
-yay -S barrier
+yay -S adless-bin
 ```
 
 ## Manual Installation
 
-Download a binary from the [releases page](https://github.com/WIttyJudge/barrier/releases) for Linux, macOS or Windows.
+Download a binary from the [releases page](https://github.com/WIttyJudge/adless/releases) for Linux, macOS or Windows.
 
 # Usage
 
 ```
 NAME:
-   barrier - Local domains blocker writter in Go
+   adless - Local domains blocker writter in Go
 
 USAGE:
-   barrier [global options] command [command options]
+   adless [global options] command [command options]
 
 VERSION:
    v1.0.0
@@ -49,18 +49,18 @@ GLOBAL OPTIONS:
 
 # Configuration file
 
-Barrier supports reading and writing configuration files.
-The default configuration file is located at `$HOME/.config/barrier/config.yml`,
+Adless supports reading and writing configuration files.
+The default configuration file is located at `$HOME/.config/adless/config.yml`,
 but it can be redefined using `--config` flag or the following environment variables:
 
-- BARRIER_CONFIG_PATH - Specifies the full path to the configuration file.
-- BARRIER_CONFIG_HOME - Specifies the folder where the `config.yml` file is located.
-- XDG_CONFIG_HOME - Specifies the base directory for user-specific configuration files. Barrier will look for `barrier/config.yml` within this directory.
+- ADLESS_CONFIG_PATH - Specifies the full path to the configuration file.
+- ADLESS_CONFIG_HOME - Specifies the folder where the `config.yml` file is located.
+- XDG_CONFIG_HOME - Specifies the base directory for user-specific configuration files. Adless will look for `adless/config.yml` within this directory.
 
 To create a local configuration file, run:
 
 ```bash
-barrier config init
+adless config init
 ```
 
 # TODO:

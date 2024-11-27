@@ -127,7 +127,7 @@ func Init() error {
 func Edit() error {
 	location := location()
 
-	c, err := editor.Cmd("barrier", location)
+	c, err := editor.Cmd("adless", location)
 	if err != nil {
 		return err
 	}
@@ -145,19 +145,19 @@ func Edit() error {
 
 // location returns the location of the config file.
 func location() string {
-	if bcp := os.Getenv("BARRIER_CONFIG_PATH"); bcp != "" {
+	if bcp := os.Getenv("ADLESS_CONFIG_PATH"); bcp != "" {
 		return bcp
 	}
 
-	if bch := os.Getenv("BARRIER_CONFIG_HOME"); bch != "" {
+	if bch := os.Getenv("ADLESS_CONFIG_HOME"); bch != "" {
 		return filepath.Join(bch, "config.yml")
 	}
 
 	if xdgConfig := os.Getenv("XDG_CONFIG_HOME"); xdgConfig != "" {
-		return filepath.Join(xdgConfig, "barrier", "config.yml")
+		return filepath.Join(xdgConfig, "adless", "config.yml")
 	}
 
-	return filepath.Join(homeDir(), ".config", "barrier", "config.yml")
+	return filepath.Join(homeDir(), ".config", "adless", "config.yml")
 }
 
 // read reads config file by location in file system.

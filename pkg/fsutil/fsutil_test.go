@@ -9,7 +9,7 @@ import (
 )
 
 func TestCopyFile(t *testing.T) {
-	td, err := os.MkdirTemp("", "barrier-fsutil")
+	td, err := os.MkdirTemp("", "adless-fsutil")
 	require.NoError(t, err)
 	defer os.RemoveAll(td)
 

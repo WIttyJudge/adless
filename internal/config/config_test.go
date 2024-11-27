@@ -11,14 +11,14 @@ import (
 )
 
 func TestLoad(t *testing.T) {
-	td, err := os.MkdirTemp("", "barrier-config")
+	td, err := os.MkdirTemp("", "adless-config")
 	defer os.RemoveAll(td)
 
 	require.NoError(t, err)
 
 	t.Run("return default config if there is no local", func(t *testing.T) {
-		os.Setenv("BARRIER_CONFIG_HOME", "test")
-		defer os.Unsetenv("BARRIER_CONFIG_HOME")
+		os.Setenv("ADLESS_CONFIG_HOME", "test")
+		defer os.Unsetenv("ADLESS_CONFIG_HOME")
 
 		config, err := Load()
 
@@ -35,8 +35,8 @@ func TestLoad(t *testing.T) {
 		_, err = testConfig.WriteString("invalid yml content")
 		require.NoError(t, err)
 
-		os.Setenv("BARRIER_CONFIG_PATH", testConfig.Name())
-		defer os.Unsetenv("BARRIER_CONFIG_PATH")
+		os.Setenv("ADLESS_CONFIG_PATH", testConfig.Name())
+		defer os.Unsetenv("ADLESS_CONFIG_PATH")
 
 		config, err := Load()
 
@@ -52,8 +52,8 @@ func TestLoad(t *testing.T) {
 		_, err = testConfig.WriteString("blocklists:\n")
 		require.NoError(t, err)
 
-		os.Setenv("BARRIER_CONFIG_PATH", testConfig.Name())
-		defer os.Unsetenv("BARRIER_CONFIG_PATH")
+		os.Setenv("ADLESS_CONFIG_PATH", testConfig.Name())
+		defer os.Unsetenv("ADLESS_CONFIG_PATH")
 
 		config, err := Load()
 
@@ -69,8 +69,8 @@ func TestLoad(t *testing.T) {
 		_, err = testConfig.WriteString("blocklists:\n- target: https://test.com")
 		require.NoError(t, err)
 
-		os.Setenv("BARRIER_CONFIG_PATH", testConfig.Name())
-		defer os.Unsetenv("BARRIER_CONFIG_PATH")
+		os.Setenv("ADLESS_CONFIG_PATH", testConfig.Name())
+		defer os.Unsetenv("ADLESS_CONFIG_PATH")
 
 		config, err := Load()
 
@@ -80,7 +80,7 @@ func TestLoad(t *testing.T) {
 }
 
 func TestLoadByUser(t *testing.T) {
-	td, err := os.MkdirTemp("", "barrier-config")
+	td, err := os.MkdirTemp("", "adless-config")
 	defer os.RemoveAll(td)
 
 	require.NoError(t, err)
@@ -121,20 +121,20 @@ func TestLoadByUser(t *testing.T) {
 }
 
 func TestLocation(t *testing.T) {
-	t.Run("BARRIER_CONFIG_PATH environment variable", func(t *testing.T) {
-		bcp := path.Join(homeDir(), ".config", "test_barrier", "config.yml")
+	t.Run("ADLESS_CONFIG_PATH environment variable", func(t *testing.T) {
+		bcp := path.Join(homeDir(), ".config", "test_adless", "config.yml")
 
-		os.Setenv("BARRIER_CONFIG_PATH", bcp)
-		defer os.Unsetenv("BARRIER_CONFIG_PATH")
+		os.Setenv("ADLESS_CONFIG_PATH", bcp)
+		defer os.Unsetenv("ADLESS_CONFIG_PATH")
 
 		assert.Equal(t, location(), bcp)
 	})
 
-	t.Run("BARRIER_CONFIG_HOME environment variable", func(t *testing.T) {
-		bch := path.Join(homeDir(), ".config", "test_barrier")
+	t.Run("ADLESS_CONFIG_HOME environment variable", func(t *testing.T) {
+		bch := path.Join(homeDir(), ".config", "test_adless")
 
-		os.Setenv("BARRIER_CONFIG_HOME", bch)
-		defer os.Unsetenv("BARRIER_CONFIG_HOME")
+		os.Setenv("ADLESS_CONFIG_HOME", bch)
+		defer os.Unsetenv("ADLESS_CONFIG_HOME")
 
 		expected := filepath.Join(bch, "config.yml")
 		assert.Equal(t, location(), expected)
@@ -146,18 +146,18 @@ func TestLocation(t *testing.T) {
 		os.Setenv("XDG_CONFIG_HOME", xdgConfig)
 		defer os.Unsetenv("XDG_CONFIG_HOME")
 
-		expected := filepath.Join(xdgConfig, "barrier", "config.yml")
+		expected := filepath.Join(xdgConfig, "adless", "config.yml")
 		assert.Equal(t, location(), expected)
 	})
 
 	t.Run("default location", func(t *testing.T) {
-		expected := filepath.Join(homeDir(), ".config", "barrier", "config.yml")
+		expected := filepath.Join(homeDir(), ".config", "adless", "config.yml")
 		assert.Equal(t, location(), expected)
 	})
 }
 
 func TestRead(t *testing.T) {
-	td, err := os.MkdirTemp("", "barrier-config")
+	td, err := os.MkdirTemp("", "adless-config")
 	defer os.RemoveAll(td)
 
 	require.NoError(t, err)
@@ -204,7 +204,7 @@ func TestHomeDir(t *testing.T) {
 		os.Setenv("SUDO_USER", "root")
 		defer os.Unsetenv("SUDO_USER")
 
-		expected := "/root/.config/barrier/config.yml"
+		expected := "/root/.config/adless/config.yml"
 		assert.Equal(t, location(), expected)
 	})
 }

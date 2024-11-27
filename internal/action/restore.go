@@ -1,8 +1,8 @@
 package action
 
 import (
-	"barrier/internal/action/exit"
-	"barrier/internal/hostsfile"
+	"adless/internal/action/exit"
+	"adless/internal/hostsfile"
 
 	"github.com/rs/zerolog/log"
 

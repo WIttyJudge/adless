@@ -1,4 +1,4 @@
-NAME=barrier
+NAME=adless
 
 SRC_PATH=./cmd/$(NAME)
 BUILD_PATH=./build/$(NAME)

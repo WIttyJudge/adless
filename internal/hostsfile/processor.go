@@ -1,8 +1,8 @@
 package hostsfile
 
 import (
-	"barrier/internal/config"
-	"barrier/internal/http"
+	"adless/internal/config"
+	"adless/internal/http"
 	"fmt"
 	"slices"
 	"strings"
