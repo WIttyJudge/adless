@@ -1,8 +1,8 @@
 package action
 
 import (
-	"adless/internal/action/exit"
-	"adless/internal/hostsfile"
+	"github.com/WIttyJudge/adless/internal/action/exit"
+	"github.com/WIttyJudge/adless/internal/hostsfile"
 
 	"github.com/rs/zerolog/log"
 

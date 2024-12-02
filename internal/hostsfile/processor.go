@@ -1,13 +1,13 @@
 package hostsfile
 
 import (
-	"adless/internal/config"
-	"adless/internal/http"
 	"fmt"
 	"slices"
 	"strings"
 	"sync"
 
+	"github.com/WIttyJudge/adless/internal/config"
+	"github.com/WIttyJudge/adless/internal/http"
 	"github.com/rs/zerolog/log"
 )
 
@@ -292,6 +292,7 @@ func (p *Processor) IsSkippedDomain(domain string) bool {
 		"ip6-allnodes",
 		"ip6-allrouters",
 		"ip6-allhosts",
+		"0.0.0.0",
 	}
 
 	return slices.Contains(skipList, domain)

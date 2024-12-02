@@ -1,8 +1,8 @@
 package action
 
 import (
-	"adless/internal/action/exit"
-	"adless/internal/config"
+	"github.com/WIttyJudge/adless/internal/action/exit"
+	"github.com/WIttyJudge/adless/internal/config"
 
 	"github.com/rs/zerolog"
 	"github.com/urfave/cli/v2"

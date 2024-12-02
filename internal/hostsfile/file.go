@@ -1,12 +1,12 @@
 package hostsfile
 
 import (
-	"adless/pkg/fsutil"
 	"errors"
 	"fmt"
 	"os"
 	"strings"
 
+	"github.com/WIttyJudge/adless/pkg/fsutil"
 	"github.com/rs/zerolog/log"
 )
 

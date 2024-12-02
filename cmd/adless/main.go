@@ -1,11 +1,12 @@
 package main
 
 import (
-	"adless/internal/action"
 	"fmt"
 	"os"
 	"sort"
 	"time"
+
+	"github.com/WIttyJudge/adless/internal/action"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
