@@ -1,5 +1,7 @@
 # adless
 
+[![Go Report Card](https://goreportcard.com/badge/github.com/WIttyJudge/adless)](https://goreportcard.com/report/github.com/WIttyJudge/adless)
+
 Adless is an easy-to-use CLI tool that blocks domains by using your system's hosts file.
 Its main advantage is that it operates without running any background processes.
 Instead, it collects domains from different sources, combines them, and updates your hosts file.

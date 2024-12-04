@@ -28,7 +28,6 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v5
         with:
-          cache-dependency-path: '**/go.sum'
           go-version: 1.22.0
 
       - name: Checkout code
@@ -38,3 +37,4 @@ jobs:
         uses: golangci/golangci-lint-action@v6
         with:
           version: v1.60
+          skip-cache: true
