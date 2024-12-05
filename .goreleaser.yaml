@@ -15,7 +15,7 @@ builds:
       - -X main.buildDate={{.Date}}
     goos:
       - linux
-      # - windows
+      - windows
       - darwin
     goarch:
       - amd64

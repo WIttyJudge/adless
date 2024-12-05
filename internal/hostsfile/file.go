@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
+	"runtime"
 	"strings"
 
 	"github.com/WIttyJudge/adless/pkg/fsutil"
@@ -136,10 +138,18 @@ func (f *File) RemoveDomainsBlocking() error {
 	return nil
 }
 
+// location returns the path to the hosts file based on the operating system.
 func location() string {
-	// TODO: add for windows as well
-	// if runtime.GOOS == "windows" {
-	// }
+	const unixHostsFile = "/etc/hosts"
+	const windowsHostsFile = `C:\Windows\System32\drivers\etc\hosts`
 
-	return "/etc/hosts"
+	if runtime.GOOS == "windows" {
+		if systemRoot := os.Getenv("SystemRoot"); systemRoot != "" {
+			return filepath.Join(systemRoot, "System32", "drivers", "etc", "hosts")
+		}
+
+		return windowsHostsFile
+	}
+
+	return unixHostsFile
 }
