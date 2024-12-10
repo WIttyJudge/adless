@@ -3,12 +3,29 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/WIttyJudge/adless)](https://goreportcard.com/report/github.com/WIttyJudge/adless)
 
 Adless is an easy-to-use CLI tool that blocks domains by using your system's hosts file.
-Its main advantage is that it operates without running any background processes.
-Instead, it collects domains from different sources, combines them, and updates your hosts file.
 
-# Installation
+## Features
 
-## Package manager
+- Works without running any backgroud processes.
+- You don't need a browser extansions to block ads.
+- Supports whitelist domains.
+- Lets you specify any number of blocklists and whitelists.
+
+## Idea
+
+The idea for developing Adless was inspired by two projects: [Maza](https://github.com/tanrax/maza-ad-blocking) and [Pi-hole](https://github.com/pi-hole/pi-hole).
+For a long time, I used both of them, but eventually,
+I wanted to create a tool that combined the best of both worlds.
+
+I wished to have a tool that, like Pi-hole, would allow users to manage
+multiple blocklists and whitelists of domains. At the same time, would work
+without running any background processes and rely on use of hosts file, much like Maza.
+
+And that's how Adless was made.
+
+## Installation
+
+### Package manager
 
 Arch Linux (AUR):
 
@@ -16,11 +33,11 @@ Arch Linux (AUR):
 yay -S adless-bin
 ```
 
-## Manual Installation
+### Manual Installation
 
 Download a binary from the [releases page](https://github.com/WIttyJudge/adless/releases) for Linux, macOS or Windows.
 
-# Usage
+## Usage
 
 ```
 NAME:
@@ -49,7 +66,7 @@ GLOBAL OPTIONS:
    --version, -V        Print the version
 ```
 
-# Configuration file
+## Configuration file
 
 Adless supports reading and writing configuration files.
 The default configuration file is located at `$HOME/.config/adless/config.yml`,
@@ -65,6 +82,6 @@ To create a local configuration file, run:
 adless config init
 ```
 
-# TODO:
+## TODO:
 
 1. Options to add path to local blocklists and whitelists
