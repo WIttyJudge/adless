@@ -22,9 +22,6 @@ build: build-linux
 build-linux:
 	GOOS=linux go build -ldflags "$(LDFLAGS)" -o $(BUILD_PATH) $(SRC_PATH)
 
-build-freebsd:
-	GOOS=freebsd go build -ldflags "$(LDFLAGS)" -o $(BUILD_PATH).bin $(SRC_PATH)
-
 build-windows:
 	GOOS=windows go build -ldflags "$(LDFLAGS)" -o $(BUILD_PATH).exe $(SRC_PATH)
 
@@ -40,7 +37,7 @@ coverage:
 
 clean:
 	rm -rf ${BUILD_PATH}
-	rm -rf ${BUILD_PATH}.bin
 	rm -rf ${BUILD_PATH}.exe
+	rm -rf ${BUILD_PATH}.osx
 	rm -rf dist/
 	rm -f coverage.out coverage.html

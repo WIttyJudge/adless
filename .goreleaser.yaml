@@ -1,4 +1,4 @@
-version: 1
+version: 2
 
 before:
   hooks:
@@ -34,11 +34,37 @@ archives:
       - goos: windows
         format: zip
 
+# brews:
+#   - repository:
+#       owner: WittyJudge
+#       name: homebrew-adless
+#     directory: Formula
+#     homepage: https://github.com/WIttyJudge/homebrew-adless
+#     description: Local domains blocker written in Go
+#     license: Apache License 2.0
+
+# nfpms:
+#   - id: adless-packages
+#     file_name_template: >-
+#       {{ .ProjectName }}_
+#       {{- .Tag }}_
+#       {{- if eq .Arch "amd64" }}x86_64
+#       {{- else if eq .Arch "386" }}i386
+#       {{- else }}{{ .Arch }}{{ end }}
+#     homepage: https://github.com/WIttyJudge/adless
+#     description: Local domains blocker written in Go  
+#     maintainer: WittyJudge
+#     license: Apache License 2.0
+#     vendor: adless
+#     formats:
+#       - deb
+#       - rpm
+
 changelog:
   filters:
-    include:
-      - "^fix"
-      - "^feat"
-      - "^build"
-      - "^ci"
-      - "^perf"
+    exclude:
+      - '^chore'
+      - '^docs'
+      - '^refactor'
+      - '^style'
+      - '^test'
