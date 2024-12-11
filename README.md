@@ -25,17 +25,34 @@ And that's how Adless was made.
 
 ## Installation
 
-### Package manager
-
-Arch Linux (AUR):
-
-```bash
-yay -S adless-bin
-```
-
 ### Manual Installation
 
-Download a binary from the [releases page](https://github.com/WIttyJudge/adless/releases) for Linux, macOS or Windows.
+Download the latest tar from the [releases page](https://github.com/WIttyJudge/adless/releases) and decompress.
+
+If you use Linux or MacOS, you can simple run:
+
+```bash
+curl -sL https://raw.githubusercontent.com/WIttyJudge/adless/refs/heads/main/scripts/install | sudo bash
+```
+
+### Building from source
+
+The [Makefile](https://github.com/WIttyJudge/adless/blob/main/Makefile) has everything you need.
+
+There are different commands to build a binary for different platforms.
+Choose one that you need.
+
+```bash
+make build-linux
+make build-windows
+make build-darwnin
+```
+
+To run then the binary:
+
+```bash
+./build/adless
+```
 
 ## Usage
 
