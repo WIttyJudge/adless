@@ -15,20 +15,17 @@ import (
 
 // Config represents the entire configuration structure.
 type Config struct {
-	Blocklists []Blocklist `yaml:"blocklists"`
-	Whitelists []Whitelist `yaml:"whitelists"`
+	// Blocklist is a structure that represents where all these domains that needs
+	// to be blocked are located.
+	Blocklists []Domainlist `yaml:"blocklists"`
+
+	// Whitelists contains domains that must not be blocked.
+	// Adding some domains to whitelist may fix many problems like YouTube
+	// watch history, videos on news sites and so on.
+	Whitelists []Domainlist `yaml:"whitelists"`
 }
 
-// Blocklist is a structure that represents where all these domains that needs
-// to be blocked are located.
-type Blocklist struct {
-	Target string `yaml:"target"`
-}
-
-// Whitelists contains domains that must not be blocked.
-// Adding some domains to whitelist may fix many problems like YouTube
-// watch history, videos on news sites and so on.
-type Whitelist struct {
+type Domainlist struct {
 	Target string `yaml:"target"`
 }
 
@@ -190,10 +187,10 @@ func homeDir() string {
 // default one will be used.
 func defaultConfig() *Config {
 	return &Config{
-		Blocklists: []Blocklist{
+		Blocklists: []Domainlist{
 			{Target: "https://raw.githubusercontent.com/StevenBlack/hosts/master/data/StevenBlack/hosts"},
 		},
-		Whitelists: []Whitelist{
+		Whitelists: []Domainlist{
 			{Target: "https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/whitelist.txt"},
 		},
 	}

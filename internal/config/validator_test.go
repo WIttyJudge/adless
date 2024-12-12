@@ -10,7 +10,7 @@ import (
 func TestValidate(t *testing.T) {
 	t.Run("config is valid", func(t *testing.T) {
 		config := &Config{
-			Blocklists: []Blocklist{
+			Blocklists: []Domainlist{
 				{Target: "https://raw.githubusercontent.com/FadeMind/hosts.extras/master/add.Spam/hosts"},
 			},
 		}
@@ -26,7 +26,7 @@ func TestValidate(t *testing.T) {
 
 	t.Run("config has invalid target", func(t *testing.T) {
 		config := &Config{
-			Blocklists: []Blocklist{
+			Blocklists: []Domainlist{
 				{Target: "https://example.com/test page?query=value&extra#section+details"},
 			},
 		}
