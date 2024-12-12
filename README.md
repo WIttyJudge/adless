@@ -32,7 +32,7 @@ Download the latest tar from the [releases page](https://github.com/WIttyJudge/a
 If you use Linux or MacOS, you can simple run:
 
 ```bash
-curl -sL https://raw.githubusercontent.com/WIttyJudge/adless/refs/heads/main/scripts/install | sudo bash
+curl -sL https://raw.githubusercontent.com/WIttyJudge/adless/refs/heads/main/scripts/install.sh | sudo bash
 ```
 
 ### Building from source

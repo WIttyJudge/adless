@@ -31,7 +31,6 @@ check_system() {
     *) fail "${uname_os} operation system is unsupported" ;;
   esac
 
-
   case $uname_arch in
     x86_64 | amd64) ARCH="x86_64" ;;
     arm64 | arm) ARCH="arm64" ;;
@@ -42,12 +41,13 @@ check_system() {
 }
 
 check_dependencies() {
-  which curl > /dev/null || fail "curl not installed"
-  which grep > /dev/null || fail "grep not installed"
+  which curl >/dev/null || fail "curl not installed"
+  which grep >/dev/null || fail "grep not installed"
+  which sed >/dev/null || fail "sed not installed"
 }
 
 find_latest_version() {
-  LATEST_VERSION=$(curl -s "https://api.github.com/repos/wittyjudge/adless/releases/latest" | grep -Po "(?<=\"tag_name\": \").*(?=\")")
+  LATEST_VERSION=$(curl -s "https://api.github.com/repos/wittyjudge/adless/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
   echo -e "${INFO} Latest version: $LATEST_VERSION"
 }
 
@@ -58,10 +58,10 @@ find_latest_release_tar_url() {
 
 install_release_tar() {
   echo -e "${INFO} Downloading release tar ${URL}.."
-  curl --fail --progress-bar -L -o "$TMP_DIR/release.tar.gz" "$URL"
+  curl --fail --progress-bar -L -o "$TMP_RELEASE_TAR" "$URL"
   echo -e "${TICK} Release tar downloaded"
 
-  tar -xzf "$TMP_DIR/release.tar.gz" -C "$TMP_DIR"
+  tar -xzf "$TMP_RELEASE_TAR" -C "$TMP_DIR"
 
   mv "$TMP_DIR/${PROGRAM_NAME}" "${OUTPUT_DIR}"
   chmod +x "${OUTPUT_DIR}/${PROGRAM_NAME}"
@@ -76,19 +76,19 @@ finish() {
 }
 
 cleanup() {
-  rm -rf $TMP_DIR > /dev/null
+  rm -rf $TMP_DIR >/dev/null
 }
 
 fail() {
-	cleanup
-	msg=$1
+  cleanup
+  msg=$1
   echo "${CROSS} $msg" 1>&2
-	exit 1
+  exit 1
 }
 
 # Execution
 
-cat << 'EOF'
+cat <<'EOF'
            _ _
   __ _  __| | | ___  ___ ___
  / _` |/ _` | |/ _ \/ __/ __|
