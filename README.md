@@ -6,10 +6,10 @@ Adless is an easy-to-use CLI tool that blocks domains by using your system's hos
 
 ## Features
 
-- Works without running any backgroud processes.
-- You don't need a browser extansions to block ads.
+- Works without running any background processes.
+- You don't need a browser extensions to block ads.
 - Supports whitelist domains.
-- Lets you specify any number of blocklists and whitelists.
+- Lets you specify multiple blocklists and whitelists.
 
 ## Idea
 
