@@ -48,7 +48,7 @@ make build-windows
 make build-darwnin
 ```
 
-To run then the binary:
+To run the binary:
 
 ```bash
 ./build/adless
@@ -93,12 +93,31 @@ but it can be redefined using `--config` flag or the following environment varia
 - ADLESS_CONFIG_HOME - Specifies the folder where the `config.yml` file is located.
 - XDG_CONFIG_HOME - Specifies the base directory for user-specific configuration files. Adless will look for `adless/config.yml` within this directory.
 
+### Default configuration
+
+```yaml
+blocklists:
+    - target: https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+whitelists:
+    - target: https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/whitelist.txt
+```
+
+### Create
+
 To create a local configuration file, run:
 
 ```bash
 adless config init
 ```
 
-## TODO:
+### Edit
+
+To open the configuration file in your preferred editor, run:
+
+```bash
+adless config edit
+```
+
+## TODO
 
 1. Options to add path to local blocklists and whitelists
