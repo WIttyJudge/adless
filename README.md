@@ -4,6 +4,8 @@
 
 Adless is an easy-to-use CLI tool that blocks domains by using your system's hosts file.
 
+![demo](./assets/demo.gif)
+
 ## Features
 
 - Works without running any background processes.
