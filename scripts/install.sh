@@ -15,12 +15,6 @@ TMP_RELEASE_TAR="$TMP_DIR/release.tar.gz"
 OUTPUT_DIR="/usr/local/bin"
 PROGRAM_NAME="adless"
 
-check_sudo_user() {
-  if [ "$EUID" -ne 0 ]; then
-    fail "Please run the script as a root user"
-  fi
-}
-
 check_system() {
   local uname_os="$(uname -s)"
   local uname_arch="$(uname -m)"
@@ -63,8 +57,8 @@ install_release_tar() {
 
   tar -xzf "$TMP_RELEASE_TAR" -C "$TMP_DIR"
 
-  mv "$TMP_DIR/${PROGRAM_NAME}" "${OUTPUT_DIR}"
-  chmod +x "${OUTPUT_DIR}/${PROGRAM_NAME}"
+  mv "$TMP_DIR/${PROGRAM_NAME}" "${OUTPUT_DIR}" || fail "Failed to make program executable, re-run the command using \"sudo bash\""
+  chmod +x "${OUTPUT_DIR}/${PROGRAM_NAME}" ||  fail "Failed to move binary, re-run the command using \"sudo bash\""
 
   cleanup
 }
@@ -97,7 +91,6 @@ cat <<'EOF'
 
 EOF
 
-check_sudo_user
 check_system
 check_dependencies
 
