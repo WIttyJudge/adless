@@ -43,7 +43,7 @@ func New() (*File, error) {
 	location := location()
 	backupLocation := location + ".backup"
 
-	osFile, err := os.OpenFile(location, os.O_WRONLY|os.O_APPEND, 0o665)
+	osFile, err := os.OpenFile(location, os.O_WRONLY|os.O_APPEND, 0o644)
 	if err != nil {
 		return nil, fmt.Errorf("failed to open file: %w", err)
 	}
