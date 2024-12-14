@@ -27,6 +27,14 @@ And that's how Adless was made.
 
 ## Installation
 
+### Package manager
+
+On Arch Linux (AUR)
+
+```bash
+yay -S adless-bin
+```
+
 ### Manual Installation
 
 Download the latest tar from the [releases page](https://github.com/WIttyJudge/adless/releases) and decompress.
@@ -99,9 +107,9 @@ but it can be redefined using `--config` flag or the following environment varia
 
 ```yaml
 blocklists:
-    - target: https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+  - target: https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
 whitelists:
-    - target: https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/whitelist.txt
+  - target: https://raw.githubusercontent.com/anudeepND/whitelist/master/domains/whitelist.txt
 ```
 
 ### Create
