@@ -44,7 +44,7 @@ Backspace 46
 Type "sudo adless enable"
 Sleep 1s
 Enter
-Sleep 5s
+Sleep 4s
 
 Type "cat /etc/hosts"
 Sleep 1s
