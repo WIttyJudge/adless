@@ -2,6 +2,7 @@ package hostsfile
 
 import (
 	"fmt"
+	"regexp"
 	"slices"
 	"strings"
 	"sync"
@@ -12,6 +13,10 @@ import (
 )
 
 const localhost = "127.0.0.1"
+
+// first part (before +): subdomain pattern.
+// second part (after +): top level domain (TLD) pattern.
+var validDomainRegexp = regexp.MustCompile(`^([a-z0-9_-]{0,63}\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]$`)
 
 // Processor is a structure that is responsible for processing blocklists,
 // whitelists and preparing the result to save to hosts file.
@@ -187,6 +192,10 @@ func (p *Processor) processContent(content string) map[string]LineContent {
 			continue
 		}
 
+		if !p.isValidDomain(domainName) {
+			continue
+		}
+
 		lineContent := LineContent{
 			ipAddress:  localhost,
 			domainName: domainName,
@@ -296,6 +305,10 @@ func (p *Processor) IsSkippedDomain(domain string) bool {
 	}
 
 	return slices.Contains(skipList, domain)
+}
+
+func (p *Processor) isValidDomain(domain string) bool {
+	return validDomainRegexp.MatchString(domain)
 }
 
 func (r Result) FormatToHostsfile() string {
